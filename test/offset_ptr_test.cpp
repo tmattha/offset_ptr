@@ -69,3 +69,24 @@ TEST_F(OffsetPtrTest, it_flushes_on_request_offset){
   EXPECT_EQ(raw[0], 0x2B);
   EXPECT_EQ(raw[1], 0x80);
 }
+
+TEST_F(OffsetPtrTest, it_flushes_on_multi_byte_type_request_offset){
+  //Test data is 0000 {1010 0010 1011 1000} 0000 0000 0000
+  uint8_t raw[3];
+  raw[0] = 0x00;
+  raw[1] = 0x00;
+  raw[2] = 0x00;
+  const size_t offset = 4;
+  uint16_t value;
+  
+  //prevent endianess
+  *(reinterpret_cast<uint8_t*>(&value)) = 0xA2;
+  *(reinterpret_cast<uint8_t*>(&value)+1) = 0xB8;
+
+  optr::offset_ptr<uint16_t> int_ptr(reinterpret_cast<uint16_t*>(raw), offset);
+  int_ptr.set(value);
+  int_ptr.flush();
+  EXPECT_EQ(raw[0], 0x0A);
+  EXPECT_EQ(raw[1], 0x2B);
+  EXPECT_EQ(raw[2], 0x80);
+}

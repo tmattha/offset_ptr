@@ -37,7 +37,8 @@ namespace optr
       const uint8_t copy_right = full_byte >> (byte_size - bit_offset);
       const uint8_t copy_left = full_byte << (bit_offset);
 
-      *base = (*base & left) + ((*copy_ptr & copy_left) >> bit_offset);
+      *base = (*base & left);
+      *base += ((*copy_ptr & copy_left) >> (bit_offset));
       for(size_t i = 1; i < sizeof(T); i++){
         *(base + i) = ((*(copy_ptr + (i-1)) & copy_right) << (byte_size - bit_offset));
         *(base + i) += ((*(copy_ptr + i) & copy_left) >> (bit_offset));
@@ -56,6 +57,7 @@ namespace optr
      */
     void set(const T& value){
       copy = value;
+      printf("%x\n", copy);
     }
 
     /**
