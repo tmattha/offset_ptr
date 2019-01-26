@@ -7,7 +7,7 @@ namespace optr{
     namespace tests
     {
         class OffsetPtrTest : public testing::Test{
-
+            
         };
     }  // tests
 }  // optr
