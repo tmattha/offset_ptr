@@ -34,21 +34,18 @@ namespace optr
      */
     void flush(){
       auto copy_ptr = reinterpret_cast<uint8_t*>(&copy);
-      const uint8_t copy_right = full_byte >> (byte_size + bit_offset);
+      const uint8_t copy_right = full_byte >> (byte_size - bit_offset);
       const uint8_t copy_left = full_byte << (bit_offset);
-      printf("copy - left: %#02x right: %#02x\n", copy_left, copy_right);
 
       *base = (*base & left) + ((*copy_ptr & copy_left) >> bit_offset);
-      printf("base[0] = %#02x\n", *base);
       for(size_t i = 1; i < sizeof(T); i++){
-        *(base + i) = ((*(copy_ptr + (i-1)) & copy_right) << bit_offset);
-        *(base + i) += ((*(copy_ptr + i) & copy_left) >> (byte_size - bit_offset));
-        printf("base[%2lu] = %#02x\n", i, *(base + i));
+        *(base + i) = ((*(copy_ptr + (i-1)) & copy_right) << (byte_size - bit_offset));
+        *(base + i) += ((*(copy_ptr + i) & copy_left) >> (bit_offset));
       }
 
       if(extra_byte()){
-        *(base + sizeof(T) + 1) = (*(copy_ptr + sizeof(T)) & copy_right) + (*(base + sizeof(T) + 1) & right);
-        printf("base[%2lu] = %#02x\n", (sizeof(T) + 1), *(base + sizeof(T) + 1));
+        *(base + sizeof(T)) = *(base + sizeof(T)) & right;
+        *(base + sizeof(T)) += ((*(copy_ptr + (sizeof(T)-1)) & copy_right) << (byte_size - bit_offset));
       }
     }
 
@@ -103,11 +100,7 @@ namespace optr
     }
 
     bool extra_byte(){
-      if(bit_offset == 0){
-        return 0;
-      }else{
-        return 1;
-      }
+      return bit_offset;
     }
   }; 
   

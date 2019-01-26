@@ -17,8 +17,8 @@ TEST_F(OffsetPtrTest, it_gets_value_no_offset){
 TEST_F(OffsetPtrTest, it_gets_value_offset){
   //Test data is 00{10 1011 10}00 0000
   uint8_t raw[2];
-  raw [0] = 0x2B;
-  raw [1] = 0x80;
+  raw[0] = 0x2B;
+  raw[1] = 0x80;
   const size_t offset = 2;
   const uint8_t value = 0xAE;
   optr::offset_ptr<uint8_t> int_ptr(raw, offset);
@@ -28,9 +28,9 @@ TEST_F(OffsetPtrTest, it_gets_value_offset){
 TEST_F(OffsetPtrTest, it_gets_value_offset_greater_1_byte){
   //Test data is 0000 0000 00{10 1011 10}00 0000
   uint8_t raw[3];
-  raw [0] = 0;
-  raw [1] = 0x2B;
-  raw [2] = 0x80;
+  raw[0] = 0;
+  raw[1] = 0x2B;
+  raw[2] = 0x80;
   const size_t offset = 10;
   const uint8_t value = 0xAE;
   optr::offset_ptr<uint8_t> int_ptr(raw, offset);
@@ -46,7 +46,7 @@ TEST_F(OffsetPtrTest, it_sets_and_gets_the_same_no_offset){
   EXPECT_EQ(other_value, int_ptr.get());
 }
 
-TEST_F(OffsetPtrTest, it_flushes_on_request){
+TEST_F(OffsetPtrTest, it_flushes_on_request_no_offset){
   uint32_t value = 10;
   uint32_t other_value = 20;
   optr::offset_ptr<uint32_t> int_ptr(&value, 0);
@@ -56,7 +56,16 @@ TEST_F(OffsetPtrTest, it_flushes_on_request){
   ASSERT_EQ(value, 20);
 }
 
-/*
-TEST_F(OffsetPtrTest, it_gets_non_primitive_types){
-  std::
-}*/
+TEST_F(OffsetPtrTest, it_flushes_on_request_offset){
+  //Test data is 00{10 1011 10}00 0000
+  uint8_t raw[2];
+  raw[0] = 0x00;
+  raw[1] = 0x00;
+  const size_t offset = 2;
+  const uint8_t value = 0xAE;
+  optr::offset_ptr<uint8_t> int_ptr(raw, offset);
+  int_ptr.set(value);
+  int_ptr.flush();
+  EXPECT_EQ(raw[0], 0x2B);
+  EXPECT_EQ(raw[1], 0x80);
+}
