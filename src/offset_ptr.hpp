@@ -2,7 +2,6 @@
 #define OFFSET_PTR
 
 #include <vector>
-#include <stdio.h>
 
 namespace optr
 {
@@ -31,13 +30,9 @@ namespace optr
     size_t byte_offset;
     size_t bit_offset;
     T copy;
-    //std::vector<uint8_t> copy;
 
     void make_copy(){
-      printf("base: %d\n", *base);
-      printf("size: %lu\n", sizeof(T)+1);
       std::vector<uint8_t> data_copy (reinterpret_cast<uint8_t*>(base), reinterpret_cast<uint8_t*>(base) + sizeof(T)+1);
-      printf("data_copy: %d (size: %lu)\n", *(T*)data_copy.data(), data_copy.size());
       
       //Assumes that there actually is data to extract.
       static_assert(sizeof(T) > 0, "Cannot extract data from an empty data structure.");
@@ -57,7 +52,6 @@ namespace optr
         data_copy[i] = (data_copy[i] & right) << bit_offset;
         //Part from the next byte that gets transferred.
         data_copy[i] += (data_copy[i+1] & left) >> (byte_size - bit_offset);
-        printf("data_copy[%2lu] - %#02x\n", i, data_copy[i]);
       }
 
       //Truncate last bit.
