@@ -31,5 +31,8 @@
 *.out
 *.app
 
-#gtest include via Bazel build
+#Bazel build artifacts
 bazel-*
+
+#VS Code settings
+.vscode
