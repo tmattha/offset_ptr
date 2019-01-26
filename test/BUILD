@@ -5,6 +5,7 @@ cc_test(
         "offset_ptr_test.hpp"
     ],
     deps = [
-         "@gtest//googletest-release-1.8.1:gtest_main"
+         "@gtest//:gtest_main",
+         "//src:offset_ptr"
     ]
 )
