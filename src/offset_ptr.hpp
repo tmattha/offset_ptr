@@ -30,6 +30,13 @@ namespace optr
     }
 
     /**
+     *  @brief Will flush on destruction.
+     */
+    virtual ~offset_ptr(){
+      flush();
+    }
+
+    /**
      *  @brief Writes temporary changes back to the offsetted data.
      */
     void flush(){

@@ -107,3 +107,12 @@ TEST_F(OffsetPtrTest, it_derefs_by_arrow_op){
   EXPECT_EQ(john_ptr->age, 45);
 }
 
+TEST_F(OffsetPtrTest, it_flushes_on_destruction){
+  uint32_t value = 10;
+  uint32_t other_value = 20;
+  auto* int_ptr = new  optr::offset_ptr<uint32_t>(&value, 0);
+  **int_ptr = other_value;
+  ASSERT_EQ(value, 10);
+  delete int_ptr;
+  ASSERT_EQ(value, 20);
+}
