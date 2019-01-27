@@ -71,21 +71,6 @@ namespace optr
       return &aligned;
     }
 
-    /**
-     *  @brief Overwrites the value in an temporary object.
-     * 
-     *  Changes will only be written to the offsetted data after calling flush or by destroying the object.
-     */
-    void set(const T& value){
-      aligned = value;
-    }
-
-    /**
-     * @brief Gets a aligned of the object the offset_ptr points to.
-     */
-    T get(){
-      return aligned;
-    }
   protected:
     uint8_t* base;
     size_t offset;
