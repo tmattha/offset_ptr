@@ -58,6 +58,14 @@ namespace optr
       *(base + sizeof(T)) += ((*(aligned_ptr + (sizeof(T)-1)) & aligned_right) << (byte_size - bit_offset));
     }
 
+    T& operator*(){
+      return aligned;
+    }
+
+    T* operator->(){
+      return &aligned;
+    }
+
     /**
      *  @brief Overwrites the value in an temporary object.
      * 

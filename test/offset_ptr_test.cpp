@@ -1,5 +1,6 @@
 #include "offset_ptr_test.hpp"
 #include "src/offset_ptr.hpp"
+#include "NonPrimitive.hpp"
 
 using namespace optr::tests;
 
@@ -90,3 +91,19 @@ TEST_F(OffsetPtrTest, it_flushes_on_multi_byte_type_request_offset){
   EXPECT_EQ(raw[1], 0x2B);
   EXPECT_EQ(raw[2], 0x80);
 }
+
+TEST_F(OffsetPtrTest, it_can_get_ref_by_asterisk_op){
+  uint32_t value = 10;
+  optr::offset_ptr<uint32_t> int_ptr(&value, 0);
+  EXPECT_EQ(*int_ptr, value);
+}
+
+TEST_F(OffsetPtrTest, it_derefs_by_arrow_op){
+  NonPrimitive john;
+  john.name = "John Doe";
+  john.age = 45;
+  optr::offset_ptr<NonPrimitive>john_ptr(&john, 0);
+  EXPECT_EQ(john_ptr->name, "John Doe");
+  EXPECT_EQ(john_ptr->age, 45);
+}
+
