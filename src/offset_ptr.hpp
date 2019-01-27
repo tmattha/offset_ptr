@@ -33,21 +33,29 @@ namespace optr
      *  @brief Writes temporary changes back to the offsetted data.
      */
     void flush(){
+      if(!has_bit_offset()){
+        *(reinterpret_cast<T*>(base)) = aligned;
+        return;
+      }
+
       auto aligned_ptr = reinterpret_cast<const uint8_t * const>(&aligned);
+
       const uint8_t aligned_right = full_byte >> (byte_size - bit_offset);
       const uint8_t aligned_left = full_byte << (bit_offset);
 
+      //First byte. Keep left part of base.
       *base = (*base & left);
       *base += ((*aligned_ptr & aligned_left) >> (bit_offset));
+
+      //Middle bytes.
       for(size_t i = 1; i < sizeof(T); i++){
         *(base + i) = ((*(aligned_ptr + (i-1)) & aligned_right) << (byte_size - bit_offset));
         *(base + i) += ((*(aligned_ptr + i) & aligned_left) >> (bit_offset));
       }
 
-      if(extra_byte()){
-        *(base + sizeof(T)) = *(base + sizeof(T)) & right;
-        *(base + sizeof(T)) += ((*(aligned_ptr + (sizeof(T)-1)) & aligned_right) << (byte_size - bit_offset));
-      }
+      //Last byte. Keep right part of base.
+      *(base + sizeof(T)) = *(base + sizeof(T)) & right;
+      *(base + sizeof(T)) += ((*(aligned_ptr + (sizeof(T)-1)) & aligned_right) << (byte_size - bit_offset));
     }
 
     /**
@@ -79,23 +87,26 @@ namespace optr
     T aligned;
 
     void make_aligned(){
-      auto aligned_ptr = reinterpret_cast<uint8_t * const>(&aligned);
-      
       //Assumes that there actually is data to extract.
       static_assert(sizeof(T) > 0, "Cannot extract data from an empty data structure.");
 
+      if(!has_bit_offset()){
+        aligned = *(reinterpret_cast<T*>(base));
+        return;
+      }
+
+      auto aligned_ptr = reinterpret_cast<uint8_t * const>(&aligned);
+
       for(size_t i = 0; i < sizeof(T); i++){
         //Part that is already in the correct byte.
-        *(aligned_ptr + i) = (*(base +i) & right) << bit_offset;
-        //Prevent access to byte after the last one in which the offsetted object is stored, when there is no offset.
-        if(extra_byte()){
-          //Part from the next byte that gets transferred.
-          *(aligned_ptr + i) += (*(base + i + 1) & left) >> (byte_size - bit_offset);
-        }
+        *(aligned_ptr + i) = (*(base + i) & right) << bit_offset;
+        
+        //Part from the next byte that gets transferred.
+        *(aligned_ptr + i) += (*(base + i + 1) & left) >> (byte_size - bit_offset);
       }
     }
 
-    bool extra_byte(){
+    bool has_bit_offset(){
       return bit_offset;
     }
   }; 
