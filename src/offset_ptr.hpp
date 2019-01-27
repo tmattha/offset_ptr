@@ -33,7 +33,7 @@ namespace optr
      *  @brief Writes temporary changes back to the offsetted data.
      */
     void flush(){
-      auto copy_ptr = reinterpret_cast<uint8_t*>(&copy);
+      auto copy_ptr = reinterpret_cast<const uint8_t * const>(&copy);
       const uint8_t copy_right = full_byte >> (byte_size - bit_offset);
       const uint8_t copy_left = full_byte << (bit_offset);
 
@@ -79,26 +79,20 @@ namespace optr
     T copy;
 
     void make_copy(){
-      
-      std::vector<uint8_t> data_copy (base, base + sizeof(T)+extra_byte());
+      auto copy_ptr = reinterpret_cast<uint8_t * const>(&copy);
       
       //Assumes that there actually is data to extract.
       static_assert(sizeof(T) > 0, "Cannot extract data from an empty data structure.");
 
-      //Anything within offset is uninteresting.
-      data_copy[0] &= right;
-
       for(size_t i = 0; i < sizeof(T); i++){
         //Part that is already in the correct byte.
-        data_copy[i] = (data_copy[i] & right) << bit_offset;
-        //Part from the next byte that gets transferred.
-        data_copy[i] += (data_copy[i+1] & left) >> (byte_size - bit_offset);
+        *(copy_ptr + i) = (*(base +i) & right) << bit_offset;
+        //Prevent access to byte after the last one in which the offsetted object is stored, when there is no offset.
+        if(extra_byte()){
+          //Part from the next byte that gets transferred.
+          *(copy_ptr + i) += (*(base + i + 1) & left) >> (byte_size - bit_offset);
+        }
       }
-
-      //Truncate last bit.
-      data_copy.resize(sizeof(T));
-
-      copy = *reinterpret_cast<T*>(data_copy.data());
     }
 
     bool extra_byte(){
