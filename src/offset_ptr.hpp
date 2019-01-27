@@ -1,8 +1,6 @@
 #if !defined(OFFSET_PTR)
 #define OFFSET_PTR
 
-#include <vector>
-
 namespace optr
 {
   template<typename T>
@@ -80,7 +78,6 @@ namespace optr
      */
     void set(const T& value){
       aligned = value;
-      printf("%x\n", aligned);
     }
 
     /**
