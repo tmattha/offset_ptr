@@ -1,3 +1,7 @@
+/**
+ *  @author Tilmann Matthaei <t.matthaei@gmail.com>
+ */
+
 #if !defined(OFFSET_PTR)
 #define OFFSET_PTR
 
@@ -8,15 +12,14 @@ namespace optr
   {
   public:
     /**
-     *  @brief Constructs an pointer with an offset from its base address and offset.
-     * 
-     *  @param ptr The pointer to the base address of the object. If offset is greater than 8, bits within the offset will not be acessed.
+     *  @brief Constructs a pointer with an offset from its base address.
+     *  @param ptr The pointer to the base address of the object.
      *  @param offset The offset in bits before the actual object starts.
+     *  
+     *  If offset is greater than 8, bytes within that offset will not be acessed.
      */
     offset_ptr(T* ptr, size_t offset)
     {
-      static_assert(1 == sizeof(uint8_t));
-      
       byte_offset = offset / byte_size;
       bit_offset = offset % byte_size;
       base = reinterpret_cast<uint8_t*>(ptr) + byte_offset;
@@ -28,14 +31,14 @@ namespace optr
     }
 
     /**
-     *  @brief Will flush on destruction.
+     *  @brief Destructs the offset_ptr object and flushes pending changes to the offsetted data.
      */
     virtual ~offset_ptr(){
       flush();
     }
 
     /**
-     *  @brief Writes temporary changes back to the offsetted data.
+     *  @brief Writes pending changes back to the offsetted data.
      */
     void flush(){
       if(!has_bit_offset()){
@@ -63,10 +66,16 @@ namespace optr
       *(base + sizeof(T)) += ((*(aligned_ptr + (sizeof(T)-1)) & aligned_right) << (byte_size - bit_offset));
     }
 
+    /**
+     * @brief Retrieve a reference to the aligned data.
+     */
     T& operator*(){
       return aligned;
     }
 
+    /**
+     *  @brief Access the aligned data.
+     */
     T* operator->(){
       return &aligned;
     }
@@ -74,6 +83,7 @@ namespace optr
   protected:
     uint8_t* base;
     size_t offset;
+    T aligned;
   private:
     static constexpr uint8_t full_byte = 0xFF;
     static constexpr unsigned int byte_size = 8;
@@ -81,7 +91,6 @@ namespace optr
     size_t bit_offset;
     uint8_t left;
     uint8_t right;
-    T aligned;
 
     void make_aligned(){
       //Assumes that there actually is data to extract.
