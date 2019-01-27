@@ -1,7 +1,7 @@
 # offset_ptr
 
 ## Usage
-offset_ptr is expected to behave just like a regular pointer. Offsetted data will be written every time `flush()` is called or when the object is destructed.
+offset_ptr is expected to behave just like a regular pointer. Offsetted data will be written every time `flush()` is called or when the object is destructed. Check out test/offset_ptr_test.cpp for more examples.
 
 ### Example
 ```cpp
