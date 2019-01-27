@@ -1,3 +1,7 @@
+/**
+ *  @author Tilmann Matthaei <t.matthaei@gmail.com>
+ */
+
 #if !defined(OFFSET_PTR_TEST)
 #define OFFSET_PTR_TEST
 

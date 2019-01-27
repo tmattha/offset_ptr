@@ -1,3 +1,7 @@
+/**
+ *  @author Tilmann Matthaei <t.matthaei@gmail.com>
+ */
+
 #if !defined(NON_PRIMITIVE)
 #define NON_PRIMITIVE
 

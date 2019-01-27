@@ -1,3 +1,7 @@
+/**
+ *  @author Tilmann Matthaei <t.matthaei@gmail.com>
+ */
+
 #include "offset_ptr_test.hpp"
 #include "src/offset_ptr.hpp"
 #include "NonPrimitive.hpp"
