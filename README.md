@@ -14,3 +14,5 @@ optr::offset_ptr<uint8_t> int_ptr(raw, offset);
 *int_ptr = value;
 //raw will look like this: 00{10 1011 10}00 0000 (0x2B80).
 ```
+### Including
+As offset_ptr is a template class all implementation is within its .hpp file. Just copy src/offset_ptr.hpp anywhere and use it. offset_ptr requires a compiler supporting at leas the C++11 standard.
