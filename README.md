@@ -17,7 +17,7 @@ optr::offset_ptr<uint8_t> int_ptr(raw, offset);
 //raw will look like this: 00{10 1011 10}00 0000 (0x2B80).
 ```
 ### Including
-As offset_ptr is a template class all implementation is within its .hpp file. Just copy src/offset_ptr.hpp anywhere and use it. offset_ptr requires a compiler supporting at leas the C++11 standard.
+As offset_ptr is a template class all implementation is within its .hpp file. Just copy src/offset_ptr.hpp anywhere and use it. offset_ptr requires a compiler supporting at least the C++11 standard.
 
 ## Use Case
 offset_ptr is aimed to streamline the process of reading data from and writing data to bit-shifted raw data. The most common use case would be working with highly fixed-layout bus messages (like CAN frames).
