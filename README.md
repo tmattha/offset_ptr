@@ -1,5 +1,7 @@
 # offset_ptr
 
+[![Build Status](https://travis-ci.com/tmattha/offset_ptr.svg?token=so1zazHeqvKVsxzCcNb7&branch=master)](https://travis-ci.com/tmattha/offset_ptr)
+
 ## Usage
 offset_ptr is expected to behave just like a regular pointer. Offsetted data will be written every time `flush()` is called or when the object is destructed. Check out test/offset_ptr_test.cpp for more examples.
 
